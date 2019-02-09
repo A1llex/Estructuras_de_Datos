@@ -46,7 +46,7 @@ public class Lista<T> implements Coleccion<T> {
 
         /* Nos dice si hay un elemento siguiente. */
         @Override public boolean hasNext() {
-        	return (siguiente != null);
+            return (siguiente != null);
         }
 
         /* Nos da el elemento siguiente. */
@@ -348,7 +348,7 @@ public class Lista<T> implements Coleccion<T> {
      * @throws NoSuchElementException si la lista es vacía.
      */
     public T getPrimero() {
-	    if (esVacia()) 
+        if (esVacia()) 
             throw new NoSuchElementException();
         return cabeza.elemento;
     }
