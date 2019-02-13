@@ -22,7 +22,7 @@ public abstract class MeteSaca<T> {
          * @param elemento el elemento del nodo.
          */
         public Nodo(T elemento) {
-            // Aquí va su código.
+            this.elemento = elemento;
         }
     }
 
@@ -62,7 +62,7 @@ public abstract class MeteSaca<T> {
      *         <tt>false</tt> en otro caso.
      */
     public boolean esVacia() {
-        // Aquí va su código.
+        return (cabeza == null);
     }
 
     /**
