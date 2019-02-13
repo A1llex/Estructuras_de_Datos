@@ -3,3 +3,5 @@
 *.tar
 *.tar.gz
 *.zip
+*.xml
+*.html
