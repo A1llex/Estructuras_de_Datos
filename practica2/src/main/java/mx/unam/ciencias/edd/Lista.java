@@ -430,9 +430,6 @@ public class Lista<T> implements Coleccion<T> {
         if (objeto == null || getClass() != objeto.getClass())
             return false;
         @SuppressWarnings("unchecked") Lista<T> lista = (Lista<T>)objeto;
-        if (objeto == null || getClass() != objeto.getClass())
-            return false;
-        @SuppressWarnings("unchecked") Lista<T> lista = (Lista<T>)objeto;
         //lo que hace es rervisar si la longitud de las listas es igual si no novale la pena comparar las listas
         if (longitud == lista.getLongitud()) {
             Nodo aux = cabeza;
@@ -472,7 +469,50 @@ public class Lista<T> implements Coleccion<T> {
      * @return una copia de la lista, pero ordenada.
      */
     public Lista<T> mergeSort(Comparator<T> comparador) {
-        // Aquí va su código.
+        if(longitud <= 1)
+            return copia();
+        return mergeSort(0,(longitud-1),comparador);
+
+    }
+
+    private Lista<T> mergeSort(int ini, int fin,Comparator<T> comparador){
+        Lista<T> izq = new Lista<T>();
+        Lista<T> der = new Lista<T>();
+        if ((fin-ini) <2) {
+            izq.agregaInicio(get(ini));
+            if(fin!=ini){
+                der.agregaInicio(get(fin));
+                return (merge(izq, der, comparador));
+            }
+            return izq;
+        }
+        int mid = (int)((ini+fin)/2);
+        izq = mergeSort(ini,mid,comparador);
+        der = mergeSort((mid+1),fin,comparador);
+        return merge(izq,der,comparador);
+    }
+
+    private Lista<T> merge(Lista<T> izq,Lista<T> der,Comparator<T> comparador){
+        Lista<T> nueva = new Lista<T>();
+        while (!izq.esVacia()) {
+            if(der.esVacia()){
+                nueva.rabo.siguiente = izq.cabeza;
+                nueva.rabo = izq.rabo;
+                nueva.longitud+=izq.longitud;
+                return nueva;
+            }
+            if (comparador.compare(izq.cabeza.elemento, der.cabeza.elemento)<=0) {
+                nueva.agregaFinal(izq.eliminaPrimero());
+            }else /*if (comparador.compare(izq.cabeza.elemento, der.cabeza.elemento)>0) */{
+                nueva.agregaFinal(der.eliminaPrimero());
+            } 
+        }
+        if(!der.esVacia()){
+            nueva.rabo.siguiente = der.cabeza;
+            nueva.rabo = der.rabo;
+            nueva.longitud+=der.longitud;
+        }
+        return nueva;
     }
 
     /**
@@ -497,7 +537,15 @@ public class Lista<T> implements Coleccion<T> {
      *         <tt>false</tt> en otro caso.
      */
     public boolean busquedaLineal(T elemento, Comparator<T> comparador) {
-        // Aquí va su código.
+        if (elemento == null || esVacia()) 
+            return false;
+        Nodo aux = cabeza;
+        while (aux!=null) {
+            if(comparador.compare(aux.elemento,elemento) == 0)
+                return true;
+            aux = aux.siguiente;
+        }
+        return false;
     }
 
     /**
