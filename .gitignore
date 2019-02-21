@@ -3,4 +3,7 @@
 *.tar
 *.tar.gz
 *.zip
+*.xml
+*.html
 *.lst
+*.prefs
