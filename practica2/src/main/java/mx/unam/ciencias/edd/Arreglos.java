@@ -124,7 +124,8 @@ public class Arreglos {
             return mid;
         if(comparador.compare(elemento,arreglo[mid]) < 0) 
             return busquedaBinaria(arreglo,elemento, (ini+1), (mid-1),comparador);
-        return busquedaBinaria(arreglo,elemento, (mid+1), (fin-1),comparador);
+        else
+        	return busquedaBinaria(arreglo,elemento, (mid+1), (fin-1),comparador);
     }
      
 
