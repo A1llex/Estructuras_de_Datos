@@ -10,7 +10,15 @@ public class Pila<T> extends MeteSaca<T> {
      * @return una representación en cadena de la pila.
      */
     @Override public String toString() {
-        // Aquí va su código.
+        if (esVacia()) 
+            return "";
+        Nodo aux = cabeza;
+        String cadena = "";
+        while (aux != null) {
+            cadena += String.valueOf(aux.elemento) + "\n";
+            aux = aux.siguiente;
+        }
+        return cadena;
     }
 
     /**
@@ -20,6 +28,14 @@ public class Pila<T> extends MeteSaca<T> {
      *         <code>null</code>.
      */
     @Override public void mete(T elemento) {
-        // Aquí va su código.
+        if (elemento == null) 
+            throw new IllegalArgumentException();
+        Nodo nuevo = new Nodo(elemento);
+        if (esVacia()) {
+            cabeza = rabo = nuevo;
+        }else {
+            nuevo.siguiente= cabeza;
+            cabeza = nuevo;
+        }
     }
 }

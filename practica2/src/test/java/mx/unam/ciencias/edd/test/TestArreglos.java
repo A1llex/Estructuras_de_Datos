@@ -58,7 +58,7 @@ public class TestArreglos {
      * Prueba unitaria para {@link Arreglos#quickSort(Object[],Comparator)}.
      */
     @Test public void testQuickSortComparator() {
-        arreglo[0] = 1;
+        arreglo[0] = -1;
         arreglo[1] = 0;
         for (int i = 2; i < total; i++)
             arreglo[i] = random.nextInt(total);
