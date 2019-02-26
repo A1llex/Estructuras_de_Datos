@@ -5,3 +5,5 @@
 *.zip
 *.lst
 *.prefs
+*.classpath
+*.project
