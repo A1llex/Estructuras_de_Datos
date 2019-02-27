@@ -16,7 +16,7 @@ public class ArbolBinarioCompleto<T> extends ArbolBinario<T> {
         /* Cola para recorrer los vértices en BFS. */
         private Cola<Vertice> cola;
 
-        /* Constructor que recibe la raíz del árbol. */
+        /* Inicializa al iterador. */
         public Iterador() {
             // Aquí va su código.
         }
