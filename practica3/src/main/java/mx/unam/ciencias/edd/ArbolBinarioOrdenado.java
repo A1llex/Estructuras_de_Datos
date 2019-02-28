@@ -23,7 +23,7 @@ public class ArbolBinarioOrdenado<T extends Comparable<T>>
         /* Pila para recorrer los vértices en DFS in-order. */
         private Pila<Vertice> pila;
 
-        /* Construye un iterador con el vértice recibido. */
+        /* Inicializa al iterador. */
         public Iterador() {
             // Aquí va su código.
         }
