@@ -98,18 +98,14 @@ public abstract class ArbolBinario<T> implements Coleccion<T> {
          * @return la altura del vértice.
          */
         @Override public int altura() {
-            if(elemento == null)
-                return -1;
             if (!hayIzquierdo()&&!hayDerecho()) 
                 return 0;
-            return (1+(maximo(izquierdo.altura(), derecho.altura())));
-        }
-
-        //metodo auxiliar regres el maximo
-        private int maximo (int a, int b){
-            if (a <= b)
-                return b;
-            return a;
+            if(hayIzquierdo())
+                if(!hayDerecho())
+                    return izquierdo.altura();
+                else
+                    return (1+(Math.max(izquierdo.altura(), derecho.altura())));
+            return derecho.altura();
         }
 
         /**
@@ -163,7 +159,7 @@ public abstract class ArbolBinario<T> implements Coleccion<T> {
          * @return una representación en cadena del vértice.
          */
         public String toString() {
-            return (String.valueOf(elementos)+"\n");
+            return (String.valueOf(elemento)+"\n");
         }
     }
 
@@ -184,7 +180,8 @@ public abstract class ArbolBinario<T> implements Coleccion<T> {
      *        binario.
      */
     public ArbolBinario(Coleccion<T> coleccion) {
-        // los que faltan he de implementar la cola para ir agregandolos
+        for (T elem: coleccion)
+            agrega(elem);
     }
 
     /**
@@ -224,7 +221,9 @@ public abstract class ArbolBinario<T> implements Coleccion<T> {
      *         <code>false</code> en otro caso.
      */
     @Override public boolean contiene(T elemento) {
-        // Aquí va su código.
+        if(elemento == null||esVacia())
+            return false;
+        return !(busca(elemento) == null);
     }
 
     /**
@@ -235,7 +234,21 @@ public abstract class ArbolBinario<T> implements Coleccion<T> {
      *         <tt>null</tt> en otro caso.
      */
     public VerticeArbolBinario<T> busca(T elemento) {
-        // Aquí va su código.
+        if(elemento == null||esVacia())
+            return null;
+        return (busca(raiz,elemento));
+    }
+    
+    private VerticeArbolBinario<T> busca(Vertice ver,T elemento) {
+        if(ver.elemento.equals(elemento))
+            return ver;
+        if(ver.hayIzquierdo())
+            if(busca(ver.izquierdo,elemento) != null)
+                return busca(ver.izquierdo,elemento);
+        if(ver.hayDerecho())
+            if(busca(ver.derecho,elemento) != null)
+                return busca(ver.derecho,elemento);
+        return null;
     }
 
     /**
@@ -246,7 +259,7 @@ public abstract class ArbolBinario<T> implements Coleccion<T> {
     public VerticeArbolBinario<T> raiz() {
         if (raiz == null)
             throw new NoSuchElementException();
-        return raiz();
+        return this.raiz;
     }
 
     /**
@@ -263,6 +276,7 @@ public abstract class ArbolBinario<T> implements Coleccion<T> {
      */
     @Override public void limpia() {
         raiz =  null;
+        elementos = 0;
     }
 
     /**
@@ -276,6 +290,8 @@ public abstract class ArbolBinario<T> implements Coleccion<T> {
             return false;
         @SuppressWarnings("unchecked")
             ArbolBinario<T> arbol = (ArbolBinario<T>)objeto;
+        if(elementos != arbol.elementos)
+            return false;
         return raiz.equals(arbol.raiz);
     }
 
@@ -286,13 +302,58 @@ public abstract class ArbolBinario<T> implements Coleccion<T> {
     @Override public String toString() {
         if(raiz == null)
             return "";
-        //tengo que hacer la cola para ir metiendo los elementos de el arbol y sacandolos e imprimiendolos
-        /**"1\n" +
-            "├─›2\n" +
-            "│  ├─›4\n" +
-            "│  └─»5\n" +
-            "└─»3\n"; */
-        return "";
+
+        Vertice ver = raiz;
+        //Tentativo si se cambia todo lo de abajo tambien 
+        String cad = ver.toString();
+        //cad = tSaux("","",ver.izquierdo());
+        if(ver.hayIzquierdo()){
+            if(!ver.hayDerecho())
+                cad += tSaux("","└─›",ver.izquierdo());
+            else
+                cad += tSaux("","├─›",ver.izquierdo());
+                cad += tSaux("","└─»",ver.derecho());
+        }else
+            if(ver.hayDerecho())
+                cad += tSaux("","└─»",ver.derecho());
+
+        return cad;
+    }
+
+    private String tSaux(String esp,String lado,VerticeArbolBinario<T> ver){
+        /*
+        "1\n" +
+        "├─›2\n" +
+        "│  ├─›4\n" +
+        "│  │  └─›-5\n" +
+        "│  │       └─»5\n" +
+         |  |           └─»-5\n+;
+        "│  └─»5\n" +
+         |     └─»-5\n+;
+        "└─»3\n"+
+        "   ├─›4\n" +
+        "   │  └─»-5\n" +
+        "   └─»5\n" 
+               └─»-5\n+;*/
+        //seria el espacio para sus hijos no para ti
+        String cad = esp+lado+ver.toString();
+        //String cad = lado+ver.toString();
+        if(ver.hayIzquierdo()){
+            if(!ver.hayDerecho())
+                cad += tSaux((esp+"│  "),"└─›",ver.izquierdo());
+                //cad += esp+tSaux((esp+"│  "),"└─›",ver.izquierdo());
+            else{
+                cad += tSaux((esp+"│  "),"├─›",ver.izquierdo());
+                cad += tSaux((esp+"│  "),"└─»",ver.derecho());
+                //cad += esp+tSaux((esp+"│  "),"├─›",ver.izquierdo());
+                //cad += esp+tSaux((esp+"│  "),"└─»",ver.derecho());
+            }
+        }else
+            if(ver.hayDerecho())
+                cad += tSaux((esp+"   "),"└─»",ver.derecho());
+                //cad += esp+tSaux((esp+"   "),"└─»",ver.derecho());
+//segun yo funciona solo creo podria mejorarla si le agrego el esp al hijo en vez del principio mio esto implica que se va creando el espacio
+        return cad;
     }
 
     /**

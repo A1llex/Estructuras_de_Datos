@@ -1,6 +1,7 @@
 package mx.unam.ciencias.edd;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * <p>Clase para árboles binarios completos.</p>
@@ -18,17 +19,24 @@ public class ArbolBinarioCompleto<T> extends ArbolBinario<T> {
 
         /* Inicializa al iterador. */
         public Iterador() {
-            // Aquí va su código.
+            cola = new Cola<>();
+            if (raiz != null)
+                cola.mete(raiz);
         }
 
         /* Nos dice si hay un elemento siguiente. */
         @Override public boolean hasNext() {
-            // Aquí va su código.
+            return (!cola.esVacia());
         }
 
         /* Regresa el siguiente elemento en orden BFS. */
         @Override public T next() {
-            // Aquí va su código.
+            Vertice ver  = cola.saca();
+            if(ver.hayIzquierdo())
+                cola.mete(ver.izquierdo);
+            if(ver.hayDerecho())
+                cola.mete(ver.derecho);
+            return ver.get();
         }
     }
 
@@ -56,7 +64,45 @@ public class ArbolBinarioCompleto<T> extends ArbolBinario<T> {
      *         <code>null</code>.
      */
     @Override public void agrega(T elemento) {
-        // Aquí va su código.
+        if(elemento == null)
+            throw new IllegalArgumentException();
+        Vertice ver = nuevoVertice(elemento);
+        if(esVacia()){
+            raiz = ver;
+            elementos = 1;
+            return;
+        }
+        Vertice padre = pUltimo();
+        if(padre.hayIzquierdo()){
+            padre.derecho = ver;
+            ver.padre = padre;
+        }
+        else{
+            padre.izquierdo = ver;
+            ver.padre = padre;
+        }
+        elementos++;
+    }
+
+    private Vertice pUltimo(){
+        Vertice aux = raiz;
+        int nivel = raiz.altura();
+        if((elementos+1) != Math.pow(2, nivel+1)){
+            int cont = 1,lugar = (elementos+1)-(int)Math.pow(2, nivel); 
+            for (int i = 0; i < (nivel-1); i++) {
+                if ((lugar/Math.pow(2, nivel-i-1)) < cont )
+                    aux = aux.izquierdo;
+                else{
+                    aux = aux.derecho;
+                    cont= 2*(cont+1);
+                }
+            }
+            return aux;
+        }else{
+            while (aux.hayIzquierdo()) 
+                aux = aux.izquierdo;
+            return aux;
+        }
     }
 
     /**
@@ -66,7 +112,25 @@ public class ArbolBinarioCompleto<T> extends ArbolBinario<T> {
      * @param elemento el elemento a eliminar.
      */
     @Override public void elimina(T elemento) {
-        // Aquí va su código.
+        Vertice cambiar = (Vertice)busca(elemento);
+        if(cambiar == null||esVacia())
+            return;
+        Vertice padre = pUltimo();
+        elementos--;
+        if(elementos == 0){
+            limpia();
+            return;
+        }
+        if(cambiar.elemento == null)
+            System.out.println("esto no me gusta");
+        if(padre.hayIzquierdo()){
+            cambiar.elemento = padre.derecho.elemento;
+            padre.derecho = null;
+        }
+        else{
+            cambiar.elemento = padre.izquierdo.elemento;
+            padre.izquierdo = null;
+        }
     }
 
     /**
@@ -75,7 +139,7 @@ public class ArbolBinarioCompleto<T> extends ArbolBinario<T> {
      * @return la altura del árbol.
      */
     @Override public int altura() {
-        // Aquí va su código.
+        return (int)(Math.floor(Math.log(getElementos())/Math.log(2)));
     }
 
     /**
@@ -84,7 +148,14 @@ public class ArbolBinarioCompleto<T> extends ArbolBinario<T> {
      * @param accion la acción a realizar en cada elemento del árbol.
      */
     public void bfs(AccionVerticeArbolBinario<T> accion) {
-        // Aquí va su código.
+        if (esVacia())
+            return;
+        T elem = iterator().next();
+        while (iterator().hasNext()) {
+            Vertice v = nuevoVertice(elem);
+            accion.actua(v);
+            elem = iterator().next();
+        }
     }
 
     /**

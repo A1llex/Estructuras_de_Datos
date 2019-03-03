@@ -25,17 +25,24 @@ public class ArbolBinarioOrdenado<T extends Comparable<T>>
 
         /* Inicializa al iterador. */
         public Iterador() {
-            // Aquí va su código.
+            if (raiz != null)
+                pila.mete(raiz);
+            pila = null;
         }
 
         /* Nos dice si hay un elemento siguiente. */
         @Override public boolean hasNext() {
-            // Aquí va su código.
+            return (pila.cabeza.siguiente.elemento!= null);
         }
 
         /* Regresa el siguiente elemento en orden DFS in-order. */
         @Override public T next() {
-            // Aquí va su código.
+            Vertice ver  =  nuevoVertice((pila.saca()).elemento);
+            if(ver.hayIzquierdo())
+                pila.mete(ver.izquierdo);
+            if(ver.hayDerecho())
+                pila.mete(ver.derecho);
+            return ver.elemento;
         }
     }
 
