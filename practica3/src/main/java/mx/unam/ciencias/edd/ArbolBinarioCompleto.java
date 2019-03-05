@@ -26,17 +26,16 @@ public class ArbolBinarioCompleto<T> extends ArbolBinario<T> {
 
         /* Nos dice si hay un elemento siguiente. */
         @Override public boolean hasNext() {
-            return (!cola.esVacia());
+            return !cola.esVacia();
         }
 
         /* Regresa el siguiente elemento en orden BFS. */
         @Override public T next() {
-            Vertice ver  = cola.saca();
-            if(ver.hayIzquierdo())
-                cola.mete(ver.izquierdo);
-            if(ver.hayDerecho())
-                cola.mete(ver.derecho);
-            return ver.get();
+            if (cola.mira().hayIzquierdo()) 
+                cola.mete(cola.mira().izquierdo);
+            if (cola.mira().hayDerecho()) 
+                cola.mete(cola.mira().derecho);    
+            return cola.saca().elemento;
         }
     }
 
@@ -72,7 +71,11 @@ public class ArbolBinarioCompleto<T> extends ArbolBinario<T> {
             elementos = 1;
             return;
         }
-        Vertice padre = pUltimo();
+        Vertice padre;
+        if(altura() == 0)
+            padre = pUltimo();
+        else
+            padre = raiz;
         if(padre.hayIzquierdo()){
             padre.derecho = ver;
             ver.padre = padre;
@@ -84,9 +87,10 @@ public class ArbolBinarioCompleto<T> extends ArbolBinario<T> {
         elementos++;
     }
 
+    //lo que hago es recorrer el arbol conforme su nivel y su lugar en el nivel
     private Vertice pUltimo(){
         Vertice aux = raiz;
-        int nivel = raiz.altura();
+        int nivel = aux.altura();
         if((elementos+1) != Math.pow(2, nivel+1)){
             int cont = 1,lugar = (elementos+1)-(int)Math.pow(2, nivel); 
             for (int i = 0; i < (nivel-1); i++) {
@@ -112,23 +116,21 @@ public class ArbolBinarioCompleto<T> extends ArbolBinario<T> {
      * @param elemento el elemento a eliminar.
      */
     @Override public void elimina(T elemento) {
-        Vertice cambiar = (Vertice)busca(elemento);
-        if(cambiar == null||esVacia())
+        Vertice elim = (Vertice)busca(elemento);
+        if(elim == null||esVacia())
             return;
-        Vertice padre = pUltimo();
-        elementos--;
-        if(elementos == 0){
+        if(elim.equals(raiz)){
             limpia();
             return;
         }
-        if(cambiar.elemento == null)
-            System.out.println("esto no me gusta");
+        Vertice padre = pUltimo();
+        elementos--;
         if(padre.hayIzquierdo()){
-            cambiar.elemento = padre.derecho.elemento;
+            elim.elemento = padre.derecho.elemento;
             padre.derecho = null;
         }
         else{
-            cambiar.elemento = padre.izquierdo.elemento;
+            elim.elemento = padre.izquierdo.elemento;
             padre.izquierdo = null;
         }
     }
@@ -139,6 +141,8 @@ public class ArbolBinarioCompleto<T> extends ArbolBinario<T> {
      * @return la altura del árbol.
      */
     @Override public int altura() {
+        if(esVacia())
+            return -1;
         return (int)(Math.floor(Math.log(getElementos())/Math.log(2)));
     }
 
@@ -150,12 +154,25 @@ public class ArbolBinarioCompleto<T> extends ArbolBinario<T> {
     public void bfs(AccionVerticeArbolBinario<T> accion) {
         if (esVacia())
             return;
+        iterator();
         T elem = iterator().next();
+        Vertice v = nuevoVertice(elem);
+        accion.actua(v);
         while (iterator().hasNext()) {
-            Vertice v = nuevoVertice(elem);
+            v = nuevoVertice(elem);
             accion.actua(v);
             elem = iterator().next();
         }
+        /*Cola<Vertice> co = new Cola<>();
+        co.mete(raiz);
+        while (!co.esVacia()) {
+            accion.actua(co.mira());
+            if (co.mira().hayIzquierdo())
+                co.mete(co.mira().izquierdo);
+            if (co.mira().hayDerecho())
+                co.mete(co.mira().derecho);
+            co.saca();
+        }*/
     }
 
     /**

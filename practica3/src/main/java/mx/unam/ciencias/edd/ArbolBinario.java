@@ -98,14 +98,16 @@ public abstract class ArbolBinario<T> implements Coleccion<T> {
          * @return la altura del vértice.
          */
         @Override public int altura() {
+            if(esVacia())
+                return-1;
             if (!hayIzquierdo()&&!hayDerecho()) 
                 return 0;
             if(hayIzquierdo())
                 if(!hayDerecho())
-                    return izquierdo.altura();
+                    return 1+izquierdo.altura();
                 else
                     return (1+(Math.max(izquierdo.altura(), derecho.altura())));
-            return derecho.altura();
+            return 1+derecho.altura();
         }
 
         /**
@@ -321,20 +323,6 @@ public abstract class ArbolBinario<T> implements Coleccion<T> {
     }
 
     private String tSaux(String esp,String lado,VerticeArbolBinario<T> ver){
-        /*
-        "1\n" +
-        "├─›2\n" +
-        "│  ├─›4\n" +
-        "│  │  └─›-5\n" +
-        "│  │       └─»5\n" +
-         |  |           └─»-5\n+;
-        "│  └─»5\n" +
-         |     └─»-5\n+;
-        "└─»3\n"+
-        "   ├─›4\n" +
-        "   │  └─»-5\n" +
-        "   └─»5\n" 
-               └─»-5\n+;*/
         //seria el espacio para sus hijos no para ti
         String cad = esp+lado+ver.toString();
         //String cad = lado+ver.toString();
