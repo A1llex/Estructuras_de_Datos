@@ -102,12 +102,14 @@ public abstract class ArbolBinario<T> implements Coleccion<T> {
                 return-1;
             if (!hayIzquierdo()&&!hayDerecho()) 
                 return 0;
-            if(hayIzquierdo())
-                if(!hayDerecho())
-                    return 1+izquierdo.altura();
-                else
+            if(hayIzquierdo()){
+                if(!hayDerecho()){
+                    return (1+izquierdo.altura());
+                }else{
                     return (1+(Math.max(izquierdo.altura(), derecho.altura())));
-            return 1+derecho.altura();
+                }
+            }
+            return (1+derecho.altura());
         }
 
         /**
@@ -146,10 +148,14 @@ public abstract class ArbolBinario<T> implements Coleccion<T> {
                 if(!elemento.equals(vertice.elemento))
                     return false;
                 if(hayIzquierdo())
-                    if(!izquierdo.equals(vertice.izquierdo))
+                    if(!vertice.hayIzquierdo())
+                        return false;
+                    else if(!izquierdo.equals(vertice.izquierdo))
                         return false;
                 if(hayDerecho())
-                    if(!derecho.equals(vertice.derecho))
+                    if(!vertice.hayDerecho())
+                        return false;
+                    else if(!derecho.equals(vertice.derecho))
                         return false;
                 return true;
             }
@@ -161,7 +167,7 @@ public abstract class ArbolBinario<T> implements Coleccion<T> {
          * @return una representación en cadena del vértice.
          */
         public String toString() {
-            return (String.valueOf(elemento)+"\n");
+            return String.valueOf(elemento);
         }
     }
 
@@ -292,6 +298,12 @@ public abstract class ArbolBinario<T> implements Coleccion<T> {
             return false;
         @SuppressWarnings("unchecked")
             ArbolBinario<T> arbol = (ArbolBinario<T>)objeto;
+        if(esVacia()){
+            if(arbol.esVacia())
+                return true;
+            else
+                return true;
+        }
         if(elementos != arbol.elementos)
             return false;
         return raiz.equals(arbol.raiz);
@@ -302,43 +314,41 @@ public abstract class ArbolBinario<T> implements Coleccion<T> {
      * @return una representación en cadena del árbol.
      */
     @Override public String toString() {
-        if(raiz == null)
+        if(esVacia())
             return "";
-
         Vertice ver = raiz;
         //Tentativo si se cambia todo lo de abajo tambien 
-        String cad = ver.toString();
+        String cad = ver.toString()+"\n";
         //cad = tSaux("","",ver.izquierdo());
         if(ver.hayIzquierdo()){
             if(!ver.hayDerecho())
-                cad += tSaux("","└─›",ver.izquierdo());
-            else
-                cad += tSaux("","├─›",ver.izquierdo());
-                cad += tSaux("","└─»",ver.derecho());
-        }else
-            if(ver.hayDerecho())
-                cad += tSaux("","└─»",ver.derecho());
-
-        return cad;
-    }
-
-    private String tSaux(String esp,String lado,VerticeArbolBinario<T> ver){
-        //seria el espacio para sus hijos no para ti
-        String cad = esp+lado+ver.toString();
-        //String cad = lado+ver.toString();
-        if(ver.hayIzquierdo()){
-            if(!ver.hayDerecho())
-                cad += tSaux((esp+"│  "),"└─›",ver.izquierdo());
-                //cad += esp+tSaux((esp+"│  "),"└─›",ver.izquierdo());
+                cad += tSaux("","└─›",ver.izquierdo);
             else{
-                cad += tSaux((esp+"│  "),"├─›",ver.izquierdo());
-                cad += tSaux((esp+"│  "),"└─»",ver.derecho());
-                //cad += esp+tSaux((esp+"│  "),"├─›",ver.izquierdo());
-                //cad += esp+tSaux((esp+"│  "),"└─»",ver.derecho());
+                cad += tSaux("","├─›",ver.izquierdo);
+                cad += tSaux("","└─»",ver.derecho);
             }
         }else
             if(ver.hayDerecho())
-                cad += tSaux((esp+"   "),"└─»",ver.derecho());
+                cad += tSaux("","└─»",ver.derecho);
+        return cad;
+    }
+
+    private String tSaux(String esp,String lado,Vertice ver){
+        //seria el espacio para sus hijos no para ti
+        String cad = esp+lado+ver.toString()+"\n";
+        //String cad = lado+ver.toString();
+        if(ver.hayIzquierdo()){
+            if(!ver.hayDerecho()){
+                cad += tSaux((esp+"│  "),"└─›",ver.izquierdo);
+                //cad += esp+tSaux((esp+"│  "),"└─›",ver.izquierdo());
+            }else{
+                cad += tSaux((esp+"│  "),"├─›",ver.izquierdo);
+                cad += tSaux((esp+"│  "),"└─»",ver.derecho);
+                //cad += esp+tSaux((esp+"│  "),"├─›",ver.izquierdo());
+                //cad += esp+tSaux((esp+"│  "),"└─»",ver.derecho());
+            }
+        }else if(ver.hayDerecho())
+            cad += tSaux((esp+"   "),"└─»",ver.derecho);
                 //cad += esp+tSaux((esp+"   "),"└─»",ver.derecho());
 //segun yo funciona solo creo podria mejorarla si le agrego el esp al hijo en vez del principio mio esto implica que se va creando el espacio
         return cad;
