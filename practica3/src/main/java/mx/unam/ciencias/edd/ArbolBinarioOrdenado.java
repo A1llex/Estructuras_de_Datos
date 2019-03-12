@@ -265,7 +265,19 @@ public class ArbolBinarioOrdenado<T extends Comparable<T>>
      * @param accion la acción a realizar en cada elemento del árbol.
      */
     public void dfsPreOrder(AccionVerticeArbolBinario<T> accion) {
-        // Aquí va su código.
+        if (esVacia())
+            return;
+        Pila<Vertice> pi = new Pila<>();
+        pi.mete(raiz);
+        while (!pi.esVacia()) {
+            Vertice aux = pi.mira();
+            accion.actua(aux);
+            pi.saca();
+            if (aux.hayDerecho())
+                pi.mete(aux.derecho);
+            if (aux.hayIzquierdo())
+                pi.mete(aux.izquierdo);
+        }
     }
 
     /**
@@ -274,7 +286,19 @@ public class ArbolBinarioOrdenado<T extends Comparable<T>>
      * @param accion la acción a realizar en cada elemento del árbol.
      */
     public void dfsInOrder(AccionVerticeArbolBinario<T> accion) {
-        // Aquí va su código.
+        if (esVacia())
+            return;
+        Pila<Vertice> pi = new Pila<>();
+        pi.mete(raiz);
+        while (!pi.esVacia()) {
+            Vertice aux = pi.mira();
+            if (aux.hayDerecho())
+                pi.mete(aux.derecho);
+            if (aux.hayIzquierdo())
+                pi.mete(aux.izquierdo);
+            accion.actua(aux);
+            pi.saca();
+        }
     }
 
     /**

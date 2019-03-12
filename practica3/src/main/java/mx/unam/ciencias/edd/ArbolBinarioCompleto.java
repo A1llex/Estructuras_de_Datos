@@ -71,7 +71,9 @@ public class ArbolBinarioCompleto<T> extends ArbolBinario<T> {
             elementos = 1;
             return;
         }
-        Vertice padre = ultimo();
+        elementos++;
+        Vertice padre = pUltimo();
+        //Vertice padre = ultimo();
         if(padre.hayIzquierdo()){
             padre.derecho = ver;
             ver.padre = padre;
@@ -80,9 +82,9 @@ public class ArbolBinarioCompleto<T> extends ArbolBinario<T> {
             padre.izquierdo = ver;
             ver.padre = padre;
         }
-        elementos++;
     }
 
+    //forma usando la cola
     private  Vertice ultimo(){
         Cola<Vertice> co = new Cola<>();
         Vertice aux = raiz;
@@ -102,17 +104,17 @@ public class ArbolBinarioCompleto<T> extends ArbolBinario<T> {
         return aux;
 
     }
+
     //forma logaritmica de llegar al padre de el ultimo vertice
-    //lo que hago es recorrer el arbol conforme su nivel y su lugar en el nivel
     private Vertice pUltimo(){
         Vertice aux = raiz;
         int nivel = aux.altura();
-        if((elementos+1) != Math.pow(2, nivel+1)){
+        if(elementos != Math.pow(2, nivel+1)){
             if(nivel < 2)
                 return aux;
-            int cont = 0, lugar = (elementos+1)-(int)Math.pow(2, nivel); 
+            int cont = 0, lugar = elementos -(int)Math.pow(2, nivel); 
             for (int i = 0; i < (nivel-1); i++) {
-                if ((lugar/Math.pow(2, nivel-i-1)) < (cont+1)){
+                if ((lugar/Math.pow(2, nivel-i-1)) < (cont*2 +1)){
                     aux = aux.izquierdo;
                     cont =cont*2;
                 }
@@ -123,8 +125,9 @@ public class ArbolBinarioCompleto<T> extends ArbolBinario<T> {
             }
             return aux;
         }else{
-            while (aux.hayIzquierdo()) 
-                aux = aux.izquierdo;
+            for (int i = 0; i < nivel; i++) {
+                aux = aux.izquierdo;  
+            } 
             return aux;
         }
     }
@@ -143,39 +146,15 @@ public class ArbolBinarioCompleto<T> extends ArbolBinario<T> {
             limpia();
             return;
         }
-        // Vertice padre = ultimo();
-        // if(padre.hayDerecho()){
-        //     elim.elemento = padre.derecho.elemento;
-        //     padre.derecho = null;
-        // }
-        // else{
-        //     elim.elemento = padre.izquierdo.elemento;
-        //     padre.izquierdo = null;
-        // }
-        Cola<Vertice> co = new Cola<>();
-        Vertice aux = raiz;
-        co.mete(aux);
-        if(!co.mira().hayIzquierdo()||!co.mira().hayDerecho())
-             aux;
-        while(!co.esVacia()){
-            aux = co.saca();
-            if(!aux.hayIzquierdo()||!aux.hayDerecho()){
-                 aux;
-            }
-            if(aux.hayIzquierdo())
-                co.mete(aux.izquierdo);
-            if(co.mira().hayDerecho())
-                co.mete(aux.derecho);
+        Vertice padre = pUltimo();
+        if(padre.hayDerecho()){
+            elim.elemento = padre.derecho.elemento;
+            padre.derecho = null;
         }
-        // Vertice padre = ultimo();
-        // if(padre.hayDerecho()){
-        //     elim.elemento = padre.derecho.elemento;
-        //     padre.derecho = null;
-        // }
-        // else{
-        //     elim.elemento = padre.izquierdo.elemento;
-        //     padre.izquierdo = null;
-        // } hay que eliminar el ultimo y si no hay hijo izquierdo entonces voy al anterior que saque
+        else{
+            elim.elemento = padre.izquierdo.elemento;
+            padre.izquierdo = null;
+        }
         elementos--;
     }
 
@@ -198,15 +177,16 @@ public class ArbolBinarioCompleto<T> extends ArbolBinario<T> {
     public void bfs(AccionVerticeArbolBinario<T> accion) {
         if (esVacia())
             return;
-        iterator();
-        T elem = iterator().next();
-        Vertice v = nuevoVertice(elem);
-        accion.actua(v);
-        while (iterator().hasNext()) {
-            v = nuevoVertice(elem);
-            //accion.actua(v);
-            bfs(accion);
-            elem = iterator().next();
+        Cola<Vertice> co = new Cola<>();
+        co.mete(raiz);
+        while (!co.esVacia()) {
+            Vertice aux = co.mira();
+            accion.actua(aux);
+            if (aux.hayIzquierdo())
+                co.mete(aux.izquierdo);
+            if (aux.hayDerecho())
+                co.mete(aux.derecho);
+            co.saca();
         }
     }
 
