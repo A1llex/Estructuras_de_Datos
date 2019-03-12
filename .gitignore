@@ -1,4 +1,5 @@
-
+*.txt
+*.xml
 *.class
 *.tar
 *.tar.gz
