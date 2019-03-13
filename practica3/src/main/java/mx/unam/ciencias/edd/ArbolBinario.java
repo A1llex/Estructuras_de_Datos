@@ -211,6 +211,8 @@ public abstract class ArbolBinario<T> implements Coleccion<T> {
      * @return la altura del árbol.
      */
     public int altura() {
+        if(esVacia())
+            return -1;
         return raiz.altura();
     }
 
