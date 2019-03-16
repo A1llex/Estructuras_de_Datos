@@ -31,7 +31,11 @@ public class ArbolRojinegro<T extends Comparable<T>>
          * @param elemento el elemento del vértice.
          */
         public VerticeRojinegro(T elemento) {
-            // Aquí va su código.
+            super(elemento);
+            if(elemento == null)
+                color = Color.NEGRO;
+            else
+                color = Color.ROJO;
         }
 
         /**
@@ -39,7 +43,11 @@ public class ArbolRojinegro<T extends Comparable<T>>
          * @return una representación en cadena del vértice rojinegro.
          */
         public String toString() {
-            // Aquí va su código.
+            return ((esNegro(this)) ? "N":"R") + "{" +  ((this.elemento == null) ? "null":this.elemento.toString()) + "}";
+        }
+
+        private boolean esNegro(VerticeRojinegro vertice) {
+            return (vertice == null || vertice.color == Color.NEGRO);
         }
 
         /**
@@ -57,7 +65,24 @@ public class ArbolRojinegro<T extends Comparable<T>>
                 return false;
             @SuppressWarnings("unchecked")
                 VerticeRojinegro vertice = (VerticeRojinegro)objeto;
-            // Aquí va su código.
+                if (altura() == vertice.altura()) {
+                    if(color != vertice.color)
+                        return false;
+                    if(!elemento.equals(vertice.elemento))
+                        return false;
+                    if(hayIzquierdo())
+                        if(!vertice.hayIzquierdo())
+                            return false;
+                        else if(!izquierdo.equals(vertice.izquierdo))
+                            return false;
+                    if(hayDerecho())
+                        if(!vertice.hayDerecho())
+                            return false;
+                        else if(!derecho.equals(vertice.derecho))
+                            return false;
+                    return true;
+                }
+                return false;
         }
     }
 
@@ -95,7 +120,7 @@ public class ArbolRojinegro<T extends Comparable<T>>
      *         VerticeRojinegro}.
      */
     public Color getColor(VerticeArbolBinario<T> vertice) {
-        // Aquí va su código.
+        return ((VerticeRojinegro)vertice).color;
     }
 
     /**
@@ -105,7 +130,33 @@ public class ArbolRojinegro<T extends Comparable<T>>
      * @param elemento el elemento a agregar.
      */
     @Override public void agrega(T elemento) {
-        // Aquí va su código.
+        super.agrega(elemento);
+        VerticeRojinegro ultimo = (VerticeRojinegro)getUltimoVerticeAgregado();
+        ultimo.color = Color.ROJO;
+        balanceaAgrega(ultimo);
+    }
+
+    private void balanceaAgrega(VerticeRojinegro ver){
+        if(!ver.hayPadre()){
+            ver.color = Color.NEGRO;
+            return;
+        } 
+        if(getColor(ver.padre) == Color.NEGRO){
+            return;
+        } 
+        if (hermano(ver)) {
+////           
+        } else {
+            
+        }
+    }
+
+    //regresa la direccion del hermano de un vertice
+    private VerticeRojinegro hermano (VerticeRojinegro ver){
+        if(ver.padre.izquierdo == ver)
+            return (VerticeRojinegro)ver.padre.derecho;
+        else
+            return (VerticeRojinegro)ver.padre.derecho;
     }
 
     /**
