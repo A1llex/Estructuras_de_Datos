@@ -136,19 +136,78 @@ public class ArbolRojinegro<T extends Comparable<T>>
         balanceaAgrega(ultimo);
     }
 
+    //metodo auxiliar para vlancear despues de agregar un vertice
     private void balanceaAgrega(VerticeRojinegro ver){
+        VerticeRojinegro padre,tio,abuelo;
         if(!ver.hayPadre()){
             ver.color = Color.NEGRO;
             return;
         } 
-        if(getColor(ver.padre) == Color.NEGRO){
+
+        padre = verticeRojinegro(ver.padre);
+        if(padre.color == Color.NEGRO){
             return;
         } 
-        if (hermano(ver)) {
-////           
+
+        abuelo = verticeRojinegro(ver.padre.padre);
+        if (esHijoIzquierdo(padre)) {
+            tio = verticeRojinegro(ver.padre.padre.derecho);
+            if ( tio != null && tio.color == Color.ROJO) {
+                tio.color = Color.NEGRO;
+                padre.color = Color.NEGRO;
+                abuelo.color = Color.ROJO;
+                balanceaAgrega(abuelo);
+                return;
+            }
         } else {
-            
+            tio = verticeRojinegro(ver.padre.padre.izquierdo);
+            if ( tio != null && tio.color == Color.ROJO) {
+                tio.color = Color.NEGRO;
+                padre.color = Color.NEGRO;
+                abuelo.color = Color.ROJO;
+                balanceaAgrega(abuelo);
+                return;
+            }
         }
+
+        if (esHijoIzquierdo(ver) != esHijoIzquierdo(padre)) {
+            if (esHijoIzquierdo(padre)) {
+                super.giraIzquierda(padre);
+            } else {
+                super.giraDerecha(padre);
+            }
+            VerticeRojinegro aux;
+            aux = padre;
+            padre = ver;
+            ver = aux;
+        }
+
+        padre.color = Color.NEGRO;
+        abuelo.color = Color.ROJO;
+        if (esHijoIzquierdo(ver)) {
+            super.giraDerecha(abuelo);
+        } else {
+            super.giraIzquierda(abuelo);
+        }
+    }
+
+    //hace un cast al vertice para poder operar con el como un Vertice de arbol Rojinegro
+    private VerticeRojinegro verticeRojinegro(VerticeArbolBinario<T> vertice) {
+        VerticeRojinegro v = (VerticeRojinegro)vertice;
+        return v;
+    }
+
+    //nos dice si el vertice es hijo izquierdo de vertice
+    private boolean esHijoIzquierdo(Vertice v) {
+        if (!v.hayPadre())
+            return false;
+        return v.padre.izquierdo == v;
+    }
+    //nos dice si el vertice es hijo derecho de otro vertice
+    private boolean esHijoDerecho(Vertice v) {
+        if (!v.hayPadre())
+            return false;
+        return v.padre.derecho == v;
     }
 
     //regresa la direccion del hermano de un vertice
@@ -166,7 +225,7 @@ public class ArbolRojinegro<T extends Comparable<T>>
      * @param elemento el elemento a eliminar del árbol.
      */
     @Override public void elimina(T elemento) {
-        // Aquí va su código.
+        return;
     }
 
     /**
