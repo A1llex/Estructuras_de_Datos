@@ -319,9 +319,7 @@ public abstract class ArbolBinario<T> implements Coleccion<T> {
         if(esVacia())
             return "";
         Vertice ver = raiz;
-        //Tentativo si se cambia todo lo de abajo tambien 
         String cad = ver.toString()+"\n";
-        //cad = tSaux("","",ver.izquierdo());
         if(ver.hayIzquierdo()){
             if(!ver.hayDerecho())
                 cad += tSaux("","└─›",ver.izquierdo);
@@ -336,24 +334,32 @@ public abstract class ArbolBinario<T> implements Coleccion<T> {
     }
 
     private String tSaux(String esp,String lado,Vertice ver){
-        //seria el espacio para sus hijos no para ti
         String cad = esp+lado+ver.toString()+"\n";
-        //String cad = lado+ver.toString();
         if(ver.hayIzquierdo()){
             if(!ver.hayDerecho()){
-                cad += tSaux((esp+"│  "),"└─›",ver.izquierdo);
-                //cad += esp+tSaux((esp+"│  "),"└─›",ver.izquierdo());
+                if(!esHijoDerecho(ver)){
+                    cad += tSaux((esp+"│  "),"└─›",ver.izquierdo);
+                }else{
+                    cad += tSaux((esp+"   "),"└─›",ver.izquierdo);
+                }
             }else{
-                cad += tSaux((esp+"│  "),"├─›",ver.izquierdo);
-                cad += tSaux((esp+"│  "),"└─»",ver.derecho);
-                //cad += esp+tSaux((esp+"│  "),"├─›",ver.izquierdo());
-                //cad += esp+tSaux((esp+"│  "),"└─»",ver.derecho());
+                if(!esHijoDerecho(ver)){
+                    cad += tSaux((esp+"│  "),"├─›",ver.izquierdo);
+                    cad += tSaux((esp+"│  "),"└─»",ver.derecho);
+                }else{
+                    cad += tSaux((esp+"   "),"├─›",ver.izquierdo);
+                    cad += tSaux((esp+"   "),"└─»",ver.derecho);
+                }
             }
         }else if(ver.hayDerecho())
             cad += tSaux((esp+"   "),"└─»",ver.derecho);
-                //cad += esp+tSaux((esp+"   "),"└─»",ver.derecho());
-//segun yo funciona solo creo podria mejorarla si le agrego el esp al hijo en vez del principio mio esto implica que se va creando el espacio
         return cad;
+    }
+
+    private boolean esHijoDerecho(Vertice v) {
+        if (!v.hayPadre())
+            return false;
+        return v.padre.derecho == v;
     }
 
     /**

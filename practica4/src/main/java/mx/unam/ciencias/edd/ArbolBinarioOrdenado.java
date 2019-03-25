@@ -301,16 +301,16 @@ public class ArbolBinarioOrdenado<T extends Comparable<T>>
         der.izquierdo = ver;
     }    
     //nos dice si el vertice es hijo izquierdo de vertice
-    private boolean esHijoIzquierdo(Vertice v) {
-        if (!v.hayPadre())
+    private boolean esHijoIzquierdo(Vertice ver) {
+        if (!ver.hayPadre())
             return false;
-        return v.padre.izquierdo == v;
+        return ver.padre.izquierdo == ver;
     }
     //nos dice si el vertice es hijo derecho de otro vertice
-    private boolean esHijoDerecho(Vertice v) {
-        if (!v.hayPadre())
+    private boolean esHijoDerecho(Vertice ver) {
+        if (!ver.hayPadre())
             return false;
-        return v.padre.derecho == v;
+        return ver.padre.derecho == ver;
     }
     /**
      * Realiza un recorrido DFS <em>pre-order</em> en el árbol, ejecutando la
