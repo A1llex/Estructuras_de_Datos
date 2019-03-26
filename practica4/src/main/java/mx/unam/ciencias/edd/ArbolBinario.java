@@ -352,7 +352,12 @@ public abstract class ArbolBinario<T> implements Coleccion<T> {
                 }
             }
         }else if(ver.hayDerecho())
-            cad += tSaux((esp+"   "),"└─»",ver.derecho);
+            if(!esHijoDerecho(ver)){
+                cad += tSaux((esp+"│  "),"└─»",ver.derecho);
+            }else{
+                cad += tSaux((esp+"   "),"└─»",ver.derecho);
+            }
+            //cad += tSaux((esp+"   "),"└─»",ver.derecho);
         return cad;
     }
 

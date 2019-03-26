@@ -61,24 +61,24 @@ public class ArbolRojinegro<T extends Comparable<T>>
                 return false;
             @SuppressWarnings("unchecked")
                 VerticeRojinegro vertice = (VerticeRojinegro)objeto;
-                if (altura() == vertice.altura()) {
-                    if(color != vertice.color)
+            if (altura() == vertice.altura()) {
+                if(color != vertice.color)
+                    return false;
+                if(!elemento.equals(vertice.elemento))
+                    return false;
+                if(hayIzquierdo())
+                    if(!vertice.hayIzquierdo())
                         return false;
-                    if(!elemento.equals(vertice.elemento))
+                    else if(!izquierdo.equals(vertice.izquierdo))
                         return false;
-                    if(hayIzquierdo())
-                        if(!vertice.hayIzquierdo())
-                            return false;
-                        else if(!izquierdo.equals(vertice.izquierdo))
-                            return false;
-                    if(hayDerecho())
-                        if(!vertice.hayDerecho())
-                            return false;
-                        else if(!derecho.equals(vertice.derecho))
-                            return false;
-                    return true;
-                }
-                return false;
+                if(hayDerecho())
+                    if(!vertice.hayDerecho())
+                        return false;
+                    else if(!derecho.equals(vertice.derecho))
+                        return false;
+                return true;
+            }
+            return false;
         }
     }
 

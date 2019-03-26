@@ -218,16 +218,13 @@ public class ArbolBinarioOrdenado<T extends Comparable<T>>
     //funcion auxiliar recursiva para la busqueda
     Vertice busca(Vertice vertice, T elemento) {
         Vertice iz;
-        if (vertice == null) {
+        if (vertice == null)
             return null;
-        }
         iz = this.busca(vertice.izquierdo, elemento);
-        if (iz != null) {
+        if (iz != null) 
             return iz;
-        }
-        if (vertice.elemento.equals(elemento)) {
+        if (vertice.elemento.equals(elemento))
             return vertice;
-        }
         return this.busca(vertice.derecho, elemento);
     }
 
