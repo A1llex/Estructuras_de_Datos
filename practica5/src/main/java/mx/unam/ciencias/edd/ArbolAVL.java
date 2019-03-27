@@ -135,17 +135,17 @@ public class ArbolAVL<T extends Comparable<T>>
     private void balanceoAVL(VerticeAVL vertice){
         actualizaAltura(vertice);
         VerticeAVL der,izq;
-        if(balance(vertice) <= -2){
-            if (balance(der = verticeAVL(vertice.derecho)) !=-1 ) {
+        if(balance(vertice) == -2){
+            if (balance(der = verticeAVL(vertice.derecho)) == 1 ) {
                 super.giraDerecha(der);
                 actualizaAltura(der);
             }
             super.giraIzquierda(vertice);
             actualizaAltura(vertice);
         }
-        if(balance(vertice) >= 2){
-            if (balance(izq = verticeAVL(vertice.izquierdo)) !=-1 ) {
-                super.giraDerecha(izq);
+        if(balance(vertice) == 2){
+            if (balance(izq = verticeAVL(vertice.izquierdo)) == -1 ) {
+                super.giraIzquierda(izq);
                 actualizaAltura(izq);
             }
             super.giraDerecha(vertice);
