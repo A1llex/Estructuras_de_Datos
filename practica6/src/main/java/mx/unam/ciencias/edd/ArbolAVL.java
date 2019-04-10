@@ -22,7 +22,8 @@ public class ArbolAVL<T extends Comparable<T>>
          * @param elemento el elemento del vértice.
          */
         public VerticeAVL(T elemento) {
-            // Aquí va su código.
+            super(elemento);
+            altura = 0;
         }
 
         /**
@@ -30,7 +31,7 @@ public class ArbolAVL<T extends Comparable<T>>
          * @return la altura del vértice.
          */
         @Override public int altura() {
-            // Aquí va su código.
+            return altura;
         }
 
         /**
@@ -38,7 +39,7 @@ public class ArbolAVL<T extends Comparable<T>>
          * @return una representación en cadena del vértice AVL.
          */
         @Override public String toString() {
-            // Aquí va su código.
+            return this.elemento.toString()+" "+altura+"/"+(balance(this));
         }
 
         /**
@@ -55,7 +56,7 @@ public class ArbolAVL<T extends Comparable<T>>
             if (objeto == null || getClass() != objeto.getClass())
                 return false;
             @SuppressWarnings("unchecked") VerticeAVL vertice = (VerticeAVL)objeto;
-            // Aquí va su código.
+            return (altura == vertice.altura && super.equals(objeto));
         }
     }
 
@@ -85,9 +86,9 @@ public class ArbolAVL<T extends Comparable<T>>
      * @return un nuevo vértice con el elemento recibido dentro del mismo.
      */
     @Override protected Vertice nuevoVertice(T elemento) {
-        // Aquí va su código.
+        return new VerticeAVL(elemento);
     }
-
+    
     /**
      * Agrega un nuevo elemento al árbol. El método invoca al método {@link
      * ArbolBinarioOrdenado#agrega}, y después balancea el árbol girándolo como
@@ -95,7 +96,64 @@ public class ArbolAVL<T extends Comparable<T>>
      * @param elemento el elemento a agregar.
      */
     @Override public void agrega(T elemento) {
-        // Aquí va su código.
+        super.agrega(elemento);
+        balanceoAVL(verticeAVL(getUltimoVerticeAgregado()));
+    }
+
+
+    private void actualizaAltura(VerticeAVL vertice){
+        // if(vertice == null)
+        //     return;
+        if (!vertice.hayIzquierdo()&&!vertice.hayDerecho()){
+            vertice.altura = 0;
+        }else{
+            if(vertice.hayIzquierdo()){
+                if(!vertice.hayDerecho())
+                    vertice.altura = 1 + verticeAVL(vertice.izquierdo).altura;
+                else
+                    vertice.altura = 1+(Math.max( verticeAVL(vertice.izquierdo).altura , verticeAVL(vertice.derecho).altura));
+            }else{
+                vertice.altura = 1 + verticeAVL(vertice.derecho).altura;
+            }
+        } 
+        if (vertice.hayPadre())
+            actualizaAltura(verticeAVL(vertice.padre));     
+    }
+
+    private int balance(VerticeAVL vertice){
+        if(!vertice.hayIzquierdo() && !vertice.hayDerecho())
+            return 0;
+        if(vertice.hayIzquierdo()){
+            if(vertice.hayDerecho())
+                return (verticeAVL(vertice.izquierdo).altura() - verticeAVL(vertice.derecho).altura());
+            else
+                return verticeAVL(vertice.izquierdo).altura() +1 ;
+        }else 
+            return ( - 1 - verticeAVL(vertice.derecho).altura());
+    }
+    
+    private void balanceoAVL(VerticeAVL vertice){
+        actualizaAltura(vertice);
+        VerticeAVL der,izq;
+        if(balance(vertice) == -2){
+            if (balance(der = verticeAVL(vertice.derecho)) == 1 ) {
+                super.giraDerecha(der);
+                actualizaAltura(der);
+            }
+            super.giraIzquierda(vertice);
+            actualizaAltura(vertice);
+        }
+        if(balance(vertice) == 2){
+            if (balance(izq = verticeAVL(vertice.izquierdo)) == -1 ) {
+                super.giraIzquierda(izq);
+                actualizaAltura(izq);
+            }
+            super.giraDerecha(vertice);
+            actualizaAltura(vertice);
+        }
+
+        if (vertice.hayPadre())
+            balanceoAVL(verticeAVL(vertice.padre));
     }
 
     /**
@@ -104,8 +162,44 @@ public class ArbolAVL<T extends Comparable<T>>
      * @param elemento el elemento a eliminar del árbol.
      */
     @Override public void elimina(T elemento) {
-        // Aquí va su código.
+        Vertice elim =  vertice(busca(elemento));
+        if(elim == null||esVacia())
+            return;
+        if(elim == raiz && elementos == 1){
+            limpia();
+            return;
+        }
+        elementos --;
+        if(!elim.hayIzquierdo()&&!elim.hayDerecho()){
+            VerticeAVL aux = verticeAVL(elim.padre());
+            if(esHijoIzquierdo(elim))
+                elim.padre.izquierdo = null;
+            if(esHijoDerecho(elim))
+                elim.padre.derecho = null;
+            balanceoAVL(aux);    
+            return;
+        }
+
+        Vertice inter = intercambiaEliminable(elim);
+        VerticeAVL  aux = verticeAVL(inter.padre);
+        elim.elemento = inter.elemento;
+        eliminaVertice(inter);
+        balanceoAVL(aux);
     }
+
+    
+    //nos dice si el vertice es hijo izquierdo de vertice
+    private boolean esHijoIzquierdo(Vertice ver) {
+        if (!ver.hayPadre())
+            return false;
+        return ver.padre.izquierdo == ver;
+    }
+    //nos dice si el vertice es hijo derecho de otro vertice
+    private boolean esHijoDerecho(Vertice ver) {
+        if (!ver.hayPadre())
+            return false;
+        return ver.padre.derecho == ver;
+    }    
 
     /**
      * Lanza la excepción {@link UnsupportedOperationException}: los árboles AVL

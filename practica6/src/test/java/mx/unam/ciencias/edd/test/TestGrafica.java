@@ -394,11 +394,13 @@ public class TestGrafica {
      * Prueba unitaria para {@link Grafica#toString}.
      */
     @Test public void testToString() {
-        for (int i = 0; i < total; i++)
+        for (int i = 0; i < total; i++){
             grafica.agrega(i);
+        }
         for (int i = 0; i < total; i++)
-            for (int j = i+1; j < total; j++)
+            for (int j = i+1; j < total; j++){
                 grafica.conecta(i, j);
+            }
         String s = "{";
         for (int i = 0; i < total; i++)
             s += String.format("%d, ", i);

@@ -216,7 +216,7 @@ public class ArbolBinarioOrdenado<T extends Comparable<T>>
     }
     
     //funcion auxiliar recursiva para la busqueda
-    Vertice busca(Vertice vertice, T elemento) {
+    public Vertice busca(Vertice vertice, T elemento) {
         Vertice iz;
         if (vertice == null)
             return null;

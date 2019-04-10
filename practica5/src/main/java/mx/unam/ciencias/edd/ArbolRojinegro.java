@@ -225,155 +225,154 @@ public class ArbolRojinegro<T extends Comparable<T>>
      * @param elemento el elemento a eliminar del árbol.
      */
     @Override public void elimina(T elemento) {
-        Vertice elim =  vertice(busca(elemento));
-        if(elim == null||esVacia())
-            return;
-        if(elim == raiz && elementos == 1){
-            limpia();
-            return;
-        }
-        elementos --;
-//<<<<<<<<<<<<<<<<<<<<<<<<<<
+        VerticeRojinegro v = verticeRojinegro(busca(elemento));
+    	if(v == null)
+    		return;
+    	VerticeRojinegro aux = null;
 
-        VerticeRojinegro f = verticeRojinegro(nuevoVertice(null));
-        boolean fantasma = false;
-        if(!elim.hayDerecho() && !elim.hayIzquierdo()){
-            fantasma =true;
-            f.color = Color.NEGRO;
-            elim.izquierdo = f;
-            elim.izquierdo.padre = elim;
-        }
+    	if(v.hayIzquierdo()){
+    		
+    		aux = v;
+    		v = subMax((VerticeRojinegro)v.izquierdo);
+    		aux.elemento = v.get();
+    		aux = null;
+    	}
+    	
+    	if(!v.hayIzquierdo() && !v.hayDerecho()){
+    		v.izquierdo = nuevoVertice(null);
+    		aux = (VerticeRojinegro)v.izquierdo;
+    		aux.padre = v;
+    		aux.color = Color.NEGRO;
+    	}
+    	VerticeRojinegro h = (v.hayIzquierdo()) ? (VerticeRojinegro)v.izquierdo : (VerticeRojinegro)v.derecho; 
+    	desconecta(v, h);
 
-        VerticeRojinegro aux;
-        if(elim.hayIzquierdo())
-            aux = verticeRojinegro(elim.izquierdo);
-        else
-            aux = verticeRojinegro(elim.derecho);
 
-        intercambiaEliminable(elim);
+    	if(h.color == Color.ROJO || v.color == Color.ROJO){
+    		h.color = Color.NEGRO;
+    	}
+    	else {
+    		h.color = Color.NEGRO;
+    		balanceaElimina(h);
+    	}
 
-        if (aux.color == Color.ROJO) 
-            aux.color = Color.NEGRO;
+    	if(aux != null){
+    		if(!aux.hayPadre()){
+    			super.raiz = null;
+    			ultimoAgregado = aux = null;
+    		}
+    		else if(esHijoDerecho(aux)){
+    			aux.padre.derecho = null;
+    		}
+    		else 
+    			aux.padre.izquierdo = null;
+    	}
+    	elementos--;
 
-        else if (verticeRojinegro(elim).color == Color.ROJO) 
-            aux.color = Color.NEGRO;
-
-        else if (verticeRojinegro(elim).color == Color.NEGRO && aux.color == Color.NEGRO) 
-            balanceaElimina(aux);
-         
-
-//<<<<<<<<<<<<<<<<<
-
-         /** 
-        VerticeRojinegro ver ;
-        boolean fantasma = false;
-        Vertice inter ;
-
-        if(!elim.hayIzquierdo()&&!elim.hayDerecho())
-            inter = elim;
-        else
-            inter = intercambiaEliminable(elim);
-        
-        elim.elemento = inter.elemento;
-
-        if(!esNegro(verticeRojinegro(inter))){
-            eliminaVertice(inter);
-            return;
-        }
-
-        if(!inter.hayIzquierdo()&&!inter.hayDerecho()){
-            ver = verticeRojinegro(nuevoVertice(null));
-            ver.color = Color.NEGRO;
-            inter.izquierdo = ver;
-            ver.padre = inter;
-            fantasma = true;
-        }else {
-            if(inter.hayIzquierdo())
-                ver = verticeRojinegro(inter.izquierdo);
-            else
-                ver = verticeRojinegro(inter.derecho);
-        }
-        
-        eliminaVertice(inter);
-
-        if( esNegro(ver)){
-            balanceaElimina(ver);
-        }
-        */
-
-        if(fantasma){
-            if(esHijoIzquierdo(f))
-                f.padre.izquierdo = null;
-            else
-                f.padre.derecho = null;
-        }
     }
 
-    private void balanceaElimina(VerticeRojinegro ver){
-        VerticeRojinegro hermano, padre, sobrinoIzq, sobrinoDer;
-        if (!ver.hayPadre()) {
-            ver.color = Color.NEGRO;
-            raiz = ver;
-            return;
-        }
+    private VerticeRojinegro subMax(VerticeRojinegro v){
 
-        padre = verticeRojinegro(ver.padre);
-        hermano = veticeHermano(ver);
-        if (! esNegro((hermano)) ) {
-            hermano.color = Color.NEGRO;
-            padre.color = Color.ROJO;
-            if (esHijoIzquierdo(ver)) {
-                super.giraIzquierda(padre);
-            } else {
-                super.giraDerecha(padre);
-            }            
-            padre = verticeRojinegro(ver.padre);
-            hermano = veticeHermano(ver);
-        }
+    	if(v.hayDerecho())
+    		return subMax((VerticeRojinegro)v.derecho);
+    	return v;
+    }
 
-        sobrinoIzq = verticeRojinegro(hermano.izquierdo);
-        sobrinoDer = verticeRojinegro(hermano.derecho);
-        if (esNegro(hermano) && esNegro(sobrinoIzq) && esNegro(sobrinoDer)) {
-            if (esNegro(padre)) {
-                hermano.color = Color.ROJO;
-                balanceaElimina(padre);
-                return;
-            }else
-                padre.color = Color.NEGRO;
-                hermano.color = Color.ROJO;
-                return;
-        }
+    private void desconecta(VerticeRojinegro v, VerticeRojinegro h){
+    
+    	if(!v.hayPadre()){
+    		raiz = h;
+    		raiz.padre = null;
+    		return;
+    	}
 
-        if ((padre.izquierdo == ver && !esNegro(sobrinoIzq) && esNegro(sobrinoDer)) || 
-            (padre.derecho == ver && esNegro(sobrinoIzq) && !esNegro(sobrinoDer))){
-            if(esNegro(sobrinoIzq)){
-                sobrinoIzq.color = Color.NEGRO;
-            } else {
-                sobrinoDer.color = Color.NEGRO;
-            }
-            hermano.color = Color.ROJO;
-            if (esHijoIzquierdo(ver)) {
-                super.giraDerecha(hermano);
-            } else {
-                super.giraIzquierda(hermano);
-            }
-            hermano = veticeHermano(ver);
-            sobrinoIzq = verticeRojinegro(hermano.izquierdo);
-            sobrinoDer = verticeRojinegro(hermano.derecho);
-        }
+		h.padre = v.padre;
+    	if(v.derecho == h){
+    		if(!esHijoDerecho(v))
+    			v.padre.izquierdo = v.derecho;
+    		else
+    			v.padre.derecho = v.derecho;
+    	}
+    	if(v.izquierdo == h){
+			if(!esHijoIzquierdo(v))
+    			v.padre.izquierdo = v.izquierdo;
+    		else
+    			v.padre.derecho = v.izquierdo;
+    	}
+
+    }
+
+    private void balanceaElimina(VerticeRojinegro v){
         
-        hermano.color = padre.color;
-        padre.color = Color.NEGRO;
-        if (esHijoIzquierdo(ver)) {
-            sobrinoDer.color = Color.NEGRO;
-        } else {
-            sobrinoIzq.color = Color.NEGRO;
-        }
-        if (esHijoIzquierdo(ver)) {
-            super.giraIzquierda(padre);
-        } else {
-            super.giraDerecha(padre);
-        }
+    	//Caso 1
+    	if(!v.hayPadre()){
+    		v.color = Color.NEGRO;
+    		raiz = v;
+    		return;
+    	}
+
+    	VerticeRojinegro p = (VerticeRojinegro)v.padre;
+    	VerticeRojinegro h = veticeHermano(v); 	
+
+    	//Caso 2
+    	if(h.color == Color.ROJO){
+    		p.color = Color.ROJO;
+    		h.color = Color.NEGRO;
+    		if(esHijoDerecho(v))
+    			super.giraDerecha(p);
+    		else
+    			super.giraIzquierda(p);
+    		h = veticeHermano(v);
+    		p = (VerticeRojinegro)v.padre;
+    	}
+
+    	VerticeRojinegro hi = (VerticeRojinegro)h.izquierdo;
+    	VerticeRojinegro hd = (VerticeRojinegro)h.derecho;
+ 		
+
+    	//Caso 3
+    	if(esNegro(hi) && esNegro(hd) && esNegro(p) && esNegro(h)){
+    		h.color = Color.ROJO;
+    		balanceaElimina(p);
+    		return;
+    	}
+
+    	//Caso 4
+    	if(esNegro(hi) && esNegro(hd) && !esNegro(p) && esNegro(h)){
+    		h.color = Color.ROJO;
+    		p.color = Color.NEGRO;
+    		return;
+    	}
+
+    	//Caso 5
+    	if(!esHijoDerecho(v) && !esNegro(hi) && esNegro(hd) && esNegro(h)){
+    		h.color = Color.ROJO;
+    		hi.color = Color.NEGRO;
+    		super.giraDerecha(h);
+    		h = veticeHermano(v);
+    		hi = (VerticeRojinegro)h.izquierdo;
+    		hd = (VerticeRojinegro)h.derecho;
+    	}
+    	else if(esHijoDerecho(v) && esNegro(hi) && !esNegro(hd) && esNegro(h)){
+    		h.color = Color.ROJO;
+    		hd.color = Color.NEGRO;
+    		super.giraIzquierda(h);
+    		h = veticeHermano(v);
+    		hi = (VerticeRojinegro)h.izquierdo;
+    		hd = (VerticeRojinegro)h.derecho;
+    	}
+
+    	//Caso 6
+    	h.color = p.color;
+    	p.color = Color.NEGRO;
+    	if(esHijoDerecho(v)){
+    		hi.color = Color.NEGRO;
+    		super.giraDerecha(p);
+    	}
+    	else{ 
+    		hd.color = Color.NEGRO;
+    		super.giraIzquierda(p);
+    	}
     }
 
     /**
