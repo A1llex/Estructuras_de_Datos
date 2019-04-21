@@ -103,6 +103,6 @@ public class ValorIndexable<T>
      * @return una representación en cadena del valor indexable.
      */
     @Override public String toString() {
-        return String.format("%d:%2.9f", elemento, valor);
+        return (elemento+String.format(":%2.9f", valor));
     }
 }

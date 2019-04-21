@@ -130,6 +130,7 @@ public class TestValorIndexable {
      */
     @Test public void testToString() {
         String s = String.format("%d:%2.9f", elemento, valor);
+        System.out.println(s);
         Assert.assertTrue(s.equals(valorIndexable.toString()));
     }
 }
