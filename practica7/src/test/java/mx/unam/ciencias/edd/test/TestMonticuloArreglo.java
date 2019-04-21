@@ -96,9 +96,10 @@ public class TestMonticuloArreglo {
             Assert.assertTrue(a.getIndice() == -1);
             ValorIndexable<String> b = ordenada.eliminaPrimero();
             Assert.assertTrue(a.equals(b));
-            for (int i = 0; i < arreglo.length; i++)
+            for (int i = 0; i < arreglo.length; i++){
                 if (a.equals(arreglo[i]))
                     arreglo[i] = null;
+            }
             verificaMonticuloArreglo(arreglo, monticulo);
             Assert.assertTrue(monticulo.getElementos() == --total);
         }
