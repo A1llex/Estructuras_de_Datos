@@ -55,7 +55,7 @@ public class MonticuloMinimo<T extends ComparableIndexable<T>>
 
         /* Compara un adaptador con otro. */
         @Override public int compareTo(Adaptador<T> adaptador) {
-            return (0);
+            return elemento.compareTo(adaptador.elemento);
         }
     }
 
@@ -161,28 +161,25 @@ public class MonticuloMinimo<T extends ComparableIndexable<T>>
      * @param elemento a eliminar del montículo.
      */
     @Override public void elimina(T elemento) {
-        if(elemento.getIndice() < 0||elemento.getIndice() > elementos || !contiene(elemento))
+        if(elemento == null ||elementos == 0 ||elemento.getIndice() < 0||elemento.getIndice() > elementos)
             return;
-        if(elementos == 1){
-            limpia();
-            return;
-        }
-        int indx=-1;
+        int indx=-2;
         for (T var : arbol) {
             if(elemento.equals(var))
                 indx = var.getIndice();
         }
-        if(indx == -1){
-            System.out.println("error");
+        if(indx == -2){
             return;
         }
-        T aux = arbol[elementos-1];
-        arbol[indx] = arbol[elementos-1];
-        arbol[indx].setIndice(indx);
-        //arbol[elementos-1].setIndice(-1);
-        arbol[elementos-1] = null;
-        elementos--;
-        reordenaAbajo(arbol[indx]);
+        T aux = arbol[indx];
+        if(elementos != 1){
+            arbol[indx] = arbol[elementos-1];
+            arbol[indx].setIndice(indx);
+            arbol[--elementos] = null;
+            reordena(arbol[indx]);
+        }else{
+            limpia();
+        }
         aux.setIndice(-1);
     }
 
@@ -334,8 +331,17 @@ public class MonticuloMinimo<T extends ComparableIndexable<T>>
      */
     public static <T extends Comparable<T>>
     Lista<T> heapSort(Coleccion<T> coleccion) {
-        return null;
-    
-        /*MonticuloMinimo<Adaptador> mm = new MonticuloMinimo<Adaptador>(coleccion);*/        
+        Lista<Adaptador<T>> l1 = new Lista<>();
+        Lista<T> l2 = new Lista<>();
+        for (T var : coleccion) {
+            Adaptador<T> aux = new Adaptador<>(var);
+            l1.agrega(aux);
+        }
+        MonticuloMinimo<Adaptador<T>> mm = new MonticuloMinimo<>(l1);
+        while(!mm.esVacia()){
+            Adaptador<T> aux = mm.elimina();
+            l2.agrega(aux.elemento);
+        }
+        return l2;   
     }
 }

@@ -117,6 +117,7 @@ public class TestMonticuloMinimo {
      * Prueba unitaria para {@link MonticuloMinimo#elimina(Object)}.
      */
     @Test public void testEliminaElemento() {
+        int j=0;
         while (!monticulo.esVacia()) {
             int n = monticulo.getElementos();
             ValorIndexable<String> a = monticulo.get(random.nextInt(n));
