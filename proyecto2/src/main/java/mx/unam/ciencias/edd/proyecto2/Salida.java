@@ -1,10 +1,5 @@
 package mx.unam.ciencias.edd.proyecto2;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.NoSuchElementException;
-
 import mx.unam.ciencias.edd.Lista;
 
 /**
@@ -14,44 +9,57 @@ import mx.unam.ciencias.edd.Lista;
 public class Salida {
 
     /**
-     * Recorrera una Lista imprimiendo sus elementos.
-     * @param lista la lista que se recorrerar e imprimira.
+     * Detecta la EStructura de datos que se registro 
+     * @param lista la lista que contiene la informacion
      */
-    public void imprime(Lista<String> lista){
-        try {
-            String s;
-            System.out.print(s =lista.eliminaPrimero());
-            for (String var : lista) {
-                System.out.print("\n"+var);
-            }
-            lista.agregaInicio(s);
-        } catch (NoSuchElementException e) {
-            System.out.println();
+    public void imprime(String estructura,Lista<Integer> lista){
+        switch (estructura) {
+            case "Lista":
+                System.out.println(ListaSVG.dibuja(lista));
+                break;
+                
+            case "Cola":
+                System.out.println(ColaSVG.dibuja(lista));
+                break;
+
+            case "Pila":
+                System.out.println(PilaSVG.dibuja(lista));
+                break;
+            
+            case "ArbolBinarioCompleto":
+                System.out.println(ArbolCompletoSVG.dibuja(lista));
+                break;
+            
+            case "ArbolBinarioOrdenado":
+                System.out.println(ArbolOrdenadoSVG.dibuja(lista));
+                break;
+            
+            case "ArbolRojinegro":
+                System.out.println("Sin Terminar ");
+                break;
+
+            case "ArbolAVL":
+                System.out.println("Sin Terminar ");
+                break;
+            
+            case "Grafica":
+                System.out.println("Sin Terminar ");
+                break;
+            
+            case "MonticuloArreglo":
+                System.out.println("Sin Terminar ");
+                break;
+
+            case "MonticuloMinimo":
+                System.out.println("Sin Terminar ");
+                break;
+
+            default:
+                System.err.println("El Formato del Archivo no es el Adecuado");
+                Proyecto2.uso();
+                break;
         }
 
-    }
-
-    /**
-     * Sobre escribira el contenido de la lista en un archivo
-     * @param lista la lista que se recorrera e imprimira en un archivo.
-     * @param ruta sera la ruta del archivo de volcado de la lista,
-     * de no existir se creara el archivo.
-     */
-    public void overRide(Lista<String> lista, String ruta){
-        try {
-            File f = new File(ruta);
-            FileWriter fw = new FileWriter(f);
-            String s;
-            fw.write(s =lista.eliminaPrimero());
-            for (String var : lista) {
-                fw.write("\n"+var);
-            }
-            lista.agregaInicio(s);
-            fw.close();
-        } catch (IOException ioe) {
-            System.err.println("No Se puede leer el Archivo "+ruta);
-        }catch (NoSuchElementException ioe) {
-        }
     }
 
  }

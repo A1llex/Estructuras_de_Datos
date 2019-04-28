@@ -12,8 +12,9 @@ public class Proyecto2 {
      */
     public static void uso() {
         System.err.println("--------------------------------------[Uso]-------------------------------------");
-        System.err.println("java -jar proyecto2.jar [bandera(opcional)] [Archivo a Leer]");
-        System.err.println("[metodo de entrada a consola] | java -jar proyecto1.jar [banderas o archivo de volcado]");
+        System.err.println("java -jar proyecto2.jar  [Archivo a Leer]");
+        System.err.println("java -jar proyecto2.jar [Entrada de consola]");
+        System.err.println("En el inicio del archivo se debe encontrar el nombre de una Estructura de Datos valida");
         System.err.println("--------------------------------------------------------------------------------");
         System.exit(1);
     }
@@ -22,8 +23,12 @@ public class Proyecto2 {
      * Main
      */
     public static void main(String[] args) {
-        OrdenadorLexicografico ordenador = new OrdenadorLexicografico();
-        ordenador.OrdLexico(args);
+        // GraficadorSVG grafica = new GraficadorSVG();
+        // grafica.run(args);
+        String[] a = {"D:/Users/Documents/PROGRAMACION/EDD/proyecto2/prueba.txt"};
+        System.out.println("supuesta ruta "+a[0]);
+        GraficadorSVG grafica = new GraficadorSVG();
+        grafica.run(a);
     }
 
 }
