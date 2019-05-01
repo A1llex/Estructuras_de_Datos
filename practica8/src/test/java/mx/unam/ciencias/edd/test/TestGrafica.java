@@ -207,8 +207,7 @@ public class TestGrafica {
         int aristas = (total * (total - 1)) / 2;
         int[] grado = { vertices - 1 };
         for (int i = 0; i < total; i++) {
-            grafica.paraCadaVertice(v -> Assert.assertTrue(v.getGrado() ==
-                                                           grado[0]));
+            grafica.paraCadaVertice(v -> Assert.assertTrue(v.getGrado() == grado[0]));
             Assert.assertTrue(grafica.getElementos() == vertices);
             Assert.assertTrue(grafica.getAristas() == aristas);
             grafica.elimina(i);

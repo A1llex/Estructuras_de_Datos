@@ -8,6 +8,7 @@ import mx.unam.ciencias.edd.Lista;
  */
 public class Salida {
 
+    
     /**
      * Detecta la EStructura de datos que se registro 
      * @param lista la lista que contiene la informacion

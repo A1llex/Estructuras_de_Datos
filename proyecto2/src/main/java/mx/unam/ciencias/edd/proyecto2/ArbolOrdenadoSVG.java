@@ -33,6 +33,7 @@ public class ArbolOrdenadoSVG {
         int i=altura,j=0;
         int x=(int)Math.pow(2, i)*50,y = (j*100+50),sep =(int)Math.pow(2, i+1)*50;
         for (int var : abo) {
+            /*el  problema es que lee en dfs*/
             VerticeArbolBinario<Integer> ver = abo.busca(var);
             if(ver.hayIzquierdo()){
                 if (ver.hayDerecho()) {
