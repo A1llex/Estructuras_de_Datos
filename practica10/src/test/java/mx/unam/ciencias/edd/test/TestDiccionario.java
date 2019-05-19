@@ -288,6 +288,7 @@ public class TestDiccionario {
         for (int i = 0; i < total; i++)
             entradas[i] = -1;
         for (int i = 0; i < total; i++) {
+            System.out.println("iteracion "+i);
             int n = random.nextInt(total);
             dicc.agrega(n, n);
             entradas[n] = n;
@@ -297,6 +298,7 @@ public class TestDiccionario {
                     continue;
                 s += String.format("'%d': '%d', ", j, j);
             }
+            System.out.println( "yo  "+dicc.toString()+" el "+s+"}");
             Assert.assertTrue(dicc.toString().equals(s + "}"));
         }
         String s = "{ ";
