@@ -689,7 +689,6 @@ public class TestGrafica {
      */
     @Test public void testDijkstra() {
         total = 20;
-        System.out.println("total sera "+total);
         for (int i = 0; i < total; i++)
             grafica.agrega(i);
         Lista<VerticeGrafica<Integer>> lista =
@@ -705,8 +704,6 @@ public class TestGrafica {
             lista.agrega(grafica.vertice(i));
             Lista<VerticeGrafica<Integer>> dijkstra =
                 grafica.dijkstra(0, i);
-            System.out.println("lista "+lista.esVacia()+" segundo "+dijkstra.esVacia());
-            System.out.println("lista "+lista.toString()+"\tdijistra "+dijkstra.toString());
             Assert.assertTrue(lista.equals(dijkstra));
         }
         total = 500 + random.nextInt(500);

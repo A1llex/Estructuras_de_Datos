@@ -90,8 +90,6 @@ public class Grafica<T> implements Coleccion<T> {
 
         /* Compara dos vértices por distancia. */
         @Override public int compareTo(Vertice vertice) {
-//return (int) (distancia - vertice.distancia);
-            //return compareToInfinitos(this.distancia, vertice.distancia);
             if (this.distancia == vertice.distancia) {
                 return 0;
             }
@@ -99,17 +97,6 @@ public class Grafica<T> implements Coleccion<T> {
                 return 1;
             }
             return -1;
-            /**
-             * private int compareToInfinitos(double a, double b) {
-            if (a != -1 && (b == -1 || a < b)) {
-                return -1;
-            }
-            if (b != -1 && (a == -1 || a > b)) {
-                return 1;
-            }
-            return 0;
-            }
-             */
         }
     }
 
@@ -234,7 +221,7 @@ public class Grafica<T> implements Coleccion<T> {
     public void conecta(T a, T b, double peso) {
         if(!contiene(a) || !contiene(b))
             throw new NoSuchElementException();
-        if(a == b || peso < 0 ||sonVecinos(a, b))
+        if(a == b||sonVecinos(a, b) || peso < 0)
             throw new IllegalArgumentException();
         Vertice va = (Vertice) vertice(a);
         Vertice vb = (Vertice) vertice(b);
@@ -286,9 +273,9 @@ public class Grafica<T> implements Coleccion<T> {
      */
     @Override public boolean contiene(T elemento) {
         for (Vertice ver : vertices)
-        if (ver.elemento.equals(elemento))
-            return true;
-    return false;
+            if (ver.elemento.equals(elemento))
+                return true;
+        return false;
     }
 
     /**
@@ -302,11 +289,9 @@ public class Grafica<T> implements Coleccion<T> {
         if(!contiene(elemento))
             throw new NoSuchElementException();
         Vertice ver = (Vertice) vertice(elemento);
-        int u=0;
         for (Vecino vec: ver.vecinos) {
-            if(sonVecinos(ver.elemento, vec.get())){
+            if(sonVecinos(ver.elemento, vec.get()))
                 desconecta(ver.elemento, vec.get());
-            }
         }
         vertices.elimina(ver);
     }
@@ -327,7 +312,7 @@ public class Grafica<T> implements Coleccion<T> {
         if (buscaVecino(va, vb) != null && buscaVecino(vb, va) != null){
             return true;
         }else
-            return false;
+            return false;    
     }
 
     /**
@@ -403,17 +388,17 @@ public class Grafica<T> implements Coleccion<T> {
      * @throws IllegalArgumentException si el vértice no es válido.
      */
     public void setColor(VerticeGrafica<T> vertice, Color color) {
-        if( vertice == null || (vertice.getClass() !=Vertice.class && vertice.getClass() != Vecino.class)){
-            throw	new	IllegalArgumentException("Vértice inválido");				
+        if (vertice == null || (vertice.getClass() != Vertice.class && vertice.getClass() != Vecino.class)){
+            throw	new	IllegalArgumentException("Vértice	inválido");	
         }
-        if(vertice.getClass()==Vertice.class){
+        if (vertice.getClass() == Vertice.class){
             Vertice v = (Vertice)vertice;
             v.color = color;
         }
-        if(vertice.getClass()==Vecino.class){
+        if (vertice.getClass() == Vecino.class){
             Vecino v = (Vecino)vertice;
             v.vecino.color = color;
-        }				
+        }  
     }
 
     /**
@@ -593,15 +578,15 @@ public class Grafica<T> implements Coleccion<T> {
     
     private Lista<VerticeGrafica<T>> trayrctoria(T origen, T destino, boolean dijkstra) {
         if(!contiene(origen)||!contiene(destino))
-        throw new NoSuchElementException();
+            throw new NoSuchElementException();
         
         for (Vertice v : vertices) {
-            v.distancia = -1;
+            v.distancia =Double.POSITIVE_INFINITY;
         }
         Vertice ori = (Vertice)vertice(origen);
         ori.distancia = 0;
         Vertice dest = (Vertice)vertice(destino);
-
+        
         MonticuloDijkstra<Vertice> mont;
         int n = getElementos();
         if(aristas > (((n*(n-1))/2)-n)){
@@ -609,37 +594,42 @@ public class Grafica<T> implements Coleccion<T> {
         }else{
             mont = new MonticuloMinimo<>(vertices);
         }
-
+        
         while (!mont.esVacia()) {
             Vertice min = mont.elimina();
             for (Vecino v : min.vecinos) {
-                if(v.vecino.distancia == Double.POSITIVE_INFINITY || (min.distancia + v.peso) < v.vecino.distancia ){
-                    v.vecino.distancia = min.distancia + (dijkstra ? v.peso : 1);
-                    mont.reordena(v.vecino);
+                if(dijkstra){
+                    if( (min.distancia + v.peso) < v.vecino.distancia ){
+                        v.vecino.distancia = min.distancia + v.peso;
+                        mont.reordena(v.vecino);
+                    }
+                }else{
+                    if( (min.distancia + 1) < v.vecino.distancia ){
+                        v.vecino.distancia = min.distancia + 1;
+                        mont.reordena(v.vecino);
+                    }
                 }
             }
         }
 
         Lista<VerticeGrafica<T>> tray = new Lista<>();
-        System.out.println("distancia origen "+ori.distancia+"\t distancia final "+dest.distancia);
-        if(dest.distancia != Double.POSITIVE_INFINITY){
-            Vertice aux = dest;
-            int u=0;
-            while (aux != ori) {
-                System.out.println("iteracion "+(u++));
-                for (Vecino v : aux.vecinos) {
-                    if ((aux.distancia - (dijkstra ? v.peso : 1)) == v.vecino.distancia) {
-                        tray.agregaInicio(aux);
-                        aux = v.vecino;
-                        break;
-                    }
+        if(dest.distancia == Double.POSITIVE_INFINITY){
+            return tray; 
+        }
+        
+        Vertice aux = dest;
+        while (!aux.equals(ori)) {
+            for (Vecino v : aux.vecinos) {
+                if (aux.distancia - (dijkstra ? v.peso : 1) == v.vecino.distancia) {
+                    tray.agregaInicio(aux);
+                    aux = v.vecino;
+                    break;
                 }
-                if(aux == ori){
-                    tray.agregaInicio(ori);
-                }            
             }
         }
-        System.out.println(" es vacia "+tray.esVacia());
+        if(aux == ori){
+            tray.agregaInicio(ori);
+        }            
         return tray;
     }
 
