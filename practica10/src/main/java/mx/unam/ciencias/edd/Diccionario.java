@@ -37,17 +37,36 @@ public class Diccionario<K, V> implements Iterable<V> {
         /* Construye un nuevo iterador, auxiliándose de las listas del
          * diccionario. */
         public Iterador() {
-            this.indice = 0;
+            int  indice=0;
+            while(indice+1 < entradas.length  && entradas[indice] == null){
+                indice++;
+            }
+            iterador = entradas[indice].iterator();
         }
 
         /* Nos dice si hay una siguiente entrada. */
         public boolean hasNext() {
-            return this.iterador.hasNext();
+            // if(indice +1 < entradas.length){
+
+            // }else
+            //     return false;
+            return (iterador != null);
         }
 
         /* Regresa la siguiente entrada. */
         public Entrada siguiente() {
-            return this.iterador.next();
+            try {
+                return iterador.next();
+            } catch (NoSuchElementException e) {
+                while( indice+1 < entradas.length  && entradas[indice] == null){
+                    indice++;
+                }
+                iterador = entradas[indice].iterator();
+                if(iterador != null)
+                    return iterador.next();
+                else
+                    return null;
+            }
         }
     }
 
@@ -125,8 +144,16 @@ public class Diccionario<K, V> implements Iterable<V> {
      * @param dispersor el dispersor a utilizar.
      */
     public Diccionario(int capacidad, Dispersor<K> dispersor) {
+        if(capacidad < MINIMA_CAPACIDAD){
+            int cap = 2;
+            while(capacidad*2 < cap){
+                cap *= 2;
+            }
+            this.entradas = nuevoArreglo(cap);
+        }else{
+            this.entradas = nuevoArreglo(capacidad);
+        }
         this.dispersor = dispersor;
-        this.entradas = nuevoArreglo(capacidad);
     }
 
     /**
@@ -148,7 +175,6 @@ public class Diccionario<K, V> implements Iterable<V> {
                     for (Entrada list : indx) {
                         int i  = dispersor.dispersa(llave) & (nueva.length -1);
                         nueva[i].agrega(list);
-                        //nueva[i].mergeSort((a, b) -> a.compareTo(b));
                     }
                 }
             }
